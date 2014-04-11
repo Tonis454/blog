@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2014 at 01:21 PM
+-- Generation Time: Apr 11, 2014 at 01:39 PM
 -- Server version: 5.6.14
 -- PHP Version: 5.5.6
 
@@ -14,6 +14,30 @@ SET time_zone = "+00:00";
 --
 -- Database: `blog`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comment`
+--
+
+DROP TABLE IF EXISTS `comment`;
+CREATE TABLE IF NOT EXISTS `comment` (
+  `comment_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `comment_text` varchar(500) NOT NULL,
+  `comment_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `comment_author` varchar(20) NOT NULL,
+  PRIMARY KEY (`comment_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `comment`
+--
+
+INSERT INTO `comment` (`comment_id`, `comment_text`, `comment_created`, `comment_author`) VALUES
+(1, 'Tervist!', '2014-04-16 20:46:10', 'Mari'),
+(2, 'Tere!', '2014-04-10 20:47:02', 'Jaanus'),
+(3, 'Hello!', '2014-04-10 20:48:19', 'Ott');
 
 -- --------------------------------------------------------
 
@@ -37,9 +61,32 @@ CREATE TABLE IF NOT EXISTS `post` (
 --
 
 INSERT INTO `post` (`post_id`, `post_subject`, `post_text`, `post_created`, `user_id`) VALUES
-(3, 'Postitus number 1', 'Tere Tere!', '2014-02-11 15:48:12', 1),
-(5, 'Postitus number 2', 'Teise postituse sisu', '2014-02-11 16:37:17', 1),
-(6, 'Postitus number 3', 'Kolmanda postituse sisu', '2014-03-03 14:41:29', 1);
+(3, 'Postitus number 1', 'Tere Tere!', '2014-04-10 15:48:12', 1),
+(5, 'Postitus number 2', 'Teise postituse sisu', '2014-04-10 16:37:17', 1),
+(6, 'Postitus number 3', 'Kolmanda postituse sisu', '2014-04-10 14:41:29', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `post_comments`
+--
+
+DROP TABLE IF EXISTS `post_comments`;
+CREATE TABLE IF NOT EXISTS `post_comments` (
+  `post_id` int(11) unsigned NOT NULL,
+  `comment_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`post_id`,`comment_id`),
+  KEY `comment_id` (`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `post_comments`
+--
+
+INSERT INTO `post_comments` (`post_id`, `comment_id`) VALUES
+(5, 1),
+(6, 2),
+(6, 3);
 
 -- --------------------------------------------------------
 
@@ -120,6 +167,13 @@ INSERT INTO `user` (`user_id`, `username`, `password`, `deleted`) VALUES
 --
 ALTER TABLE `post`
   ADD CONSTRAINT `post_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
+
+--
+-- Constraints for table `post_comments`
+--
+ALTER TABLE `post_comments`
+  ADD CONSTRAINT `post_comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`),
+  ADD CONSTRAINT `post_comments_ibfk_2` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`comment_id`);
 
 --
 -- Constraints for table `post_tags`
